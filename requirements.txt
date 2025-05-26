@@ -1,0 +1,15 @@
+scipy
+spacy
+tqdm
+Keras
+waiting
+ekphrasis
+pandas
+transformers
+lime
+numpy
+matplotlib
+gensim
+dataclasses
+GPUtil
+scikit_learn

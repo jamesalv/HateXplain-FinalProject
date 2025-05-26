@@ -1,0 +1,130 @@
+{
+  "binary": {
+    "distilbert-base-uncased": {
+      "model_name": "distilbert-base-uncased",
+      "num_classes": 2,
+      "history": {
+        "train_loss": [
+          0.5223413491793727
+        ],
+        "val_loss": [
+          0.45092072836849667
+        ],
+        "val_accuracy": [
+          0.7931831311380705
+        ],
+        "val_f1": [
+          0.7898810282673148
+        ]
+      },
+      "metrics": {
+        "accuracy": 0.7618304732189287,
+        "f1_score": 0.7576352809087707,
+        "precision": 0.75620957196598,
+        "recall": 0.7640587194557249,
+        "auroc": 0.853738415207052,
+        "loss": 0.47819897507833053
+      },
+      "confusion_matrix": [
+        [
+          606,
+          175
+        ],
+        [
+          283,
+          859
+        ]
+      ],
+      "label_map": {
+        "non-toxic": 0,
+        "toxic": 1
+      },
+      "target_metrics": {
+        "African": 0.9239520301119917,
+        "Islam": 0.887410355831589,
+        "Jewish": 0.9392017495899398,
+        "Homosexual": 0.8542452029206996,
+        "Women": 0.8103332282140229,
+        "Refugee": 0.665547036631374,
+        "Arab": 0.9183214753460054,
+        "Caucasian": 0.6655425007252684,
+        "Hispanic": 0.9212412587412586,
+        "Asian": 0.7441888816644993
+      },
+      "bias_auc_metrics": {
+        "GMB-SUBGROUP-AUC": 0.7975553294720109,
+        "GMB-BPSN-AUC": 0.76194439965089,
+        "GMB-BNSP-AUC": 0.790157379675141,
+        "GMB-COMBINED-AUC": 0.7822938986192433
+      }
+    }
+  },
+  "3class": {
+    "distilbert-base-uncased": {
+      "model_name": "distilbert-base-uncased",
+      "num_classes": 3,
+      "history": {
+        "train_loss": [
+          0.8212421752160579
+        ],
+        "val_loss": [
+          0.741256067785648
+        ],
+        "val_accuracy": [
+          0.6978625072212594
+        ],
+        "val_f1": [
+          0.6892091119220544
+        ]
+      },
+      "metrics": {
+        "accuracy": 0.6848673946957878,
+        "f1_score": 0.6724658373991201,
+        "precision": 0.6744769461746727,
+        "recall": 0.67190244863217,
+        "auroc": 0.8437003225865589,
+        "loss": 0.7191884855100931
+      },
+      "confusion_matrix": [
+        [
+          462,
+          47,
+          85
+        ],
+        [
+          38,
+          592,
+          151
+        ],
+        [
+          83,
+          202,
+          263
+        ]
+      ],
+      "label_map": {
+        "hatespeech": 0,
+        "normal": 1,
+        "offensive": 2
+      },
+      "target_metrics": {
+        "African": 0.7786306094124573,
+        "Islam": 0.5023356911287946,
+        "Homosexual": 0.4099230986312968,
+        "Jewish": 0.737293388429752,
+        "Women": 0.4824362289988279,
+        "Refugee": 0.34032755874153725,
+        "Arab": 0.7057961118251928,
+        "Caucasian": 0.39772181431414255,
+        "Asian": 0.490858123091084,
+        "Hispanic": 0.7343124669636789
+      },
+      "bias_auc_metrics": {
+        "GMB-SUBGROUP-AUC": 0.46454505934898505,
+        "GMB-BPSN-AUC": 0.6100691703231729,
+        "GMB-BNSP-AUC": 0.4521750418452594,
+        "GMB-COMBINED-AUC": 0.48572737265811156
+      }
+    }
+  }
+}

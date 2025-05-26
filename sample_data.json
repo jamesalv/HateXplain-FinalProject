@@ -1,0 +1,661 @@
+{
+    "1179055004553900032_twitter": {
+      "post_id": "1179055004553900032_twitter",
+      "annotators": [
+        {
+          "label": "normal",
+          "annotator_id": 1,
+          "target": [
+            "None"
+          ]
+        },
+        {
+          "label": "normal",
+          "annotator_id": 2,
+          "target": [
+            "None"
+          ]
+        },
+        {
+          "label": "normal",
+          "annotator_id": 3,
+          "target": [
+            "None"
+          ]
+        }
+      ],
+      "rationales": [],
+      "post_tokens": [
+        "i",
+        "dont",
+        "think",
+        "im",
+        "getting",
+        "my",
+        "baby",
+        "them",
+        "white",
+        "9",
+        "he",
+        "has",
+        "two",
+        "white",
+        "j",
+        "and",
+        "nikes",
+        "not",
+        "even",
+        "touched"
+      ]
+    },
+    "1179085312976445440_twitter": {
+        "post_id": "1179085312976445440_twitter",
+        "annotators": [
+            {
+                "label": "hatespeech",
+                "annotator_id": 4,
+                "target": [
+                    "Caucasian",
+                    "Women"
+                ]
+            },
+            {
+                "label": "hatespeech",
+                "annotator_id": 2,
+                "target": [
+                    "Women",
+                    "Caucasian"
+                ]
+            },
+            {
+                "label": "offensive",
+                "annotator_id": 3,
+                "target": [
+                    "Women",
+                    "Caucasian"
+                ]
+            }
+        ],
+        "rationales": [[
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1
+            ],
+            [
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1
+            ]
+        ],
+        "post_tokens": [
+            "this",
+            "bitch",
+            "in",
+            "whataburger",
+            "eating",
+            "a",
+            "burger",
+            "with",
+            "no",
+            "top",
+            "bun",
+            "and",
+            "holding",
+            "it",
+            "palm",
+            "up",
+            "i",
+            "hate",
+            "white",
+            "bitches"
+        ]
+    },
+    "6119701_gab": {
+    "post_id": "6119701_gab",
+    "annotators": [
+      {
+        "label": "hatespeech",
+        "annotator_id": 9,
+        "target": [
+          "Christian"
+        ]
+      },
+      {
+        "label": "hatespeech",
+        "annotator_id": 83,
+        "target": [
+          "Minority",
+          "African"
+        ]
+      },
+      {
+        "label": "hatespeech",
+        "annotator_id": 30,
+        "target": [
+          "African"
+        ]
+      }
+    ],
+    "rationales": [
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "post_tokens": [
+      "im",
+      "a",
+      "pagan",
+      "so",
+      "fuck",
+      "the",
+      "bible",
+      "the",
+      "founding",
+      "fathers",
+      "would",
+      "be",
+      "pissed",
+      "to",
+      "see",
+      "a",
+      "nigger",
+      "in",
+      "office",
+      "and",
+      "melting",
+      "pot",
+      "of",
+      "european",
+      "culture",
+      "not",
+      "3",
+      "rd",
+      "world",
+      "parasites",
+      "any",
+      "other"
+    ]
+  },
+  "1179088797964763136_twitter": {
+    "post_id": "1179088797964763136_twitter",
+    "annotators": [
+      {
+        "label": "hatespeech",
+        "annotator_id": 1,
+        "target": [
+          "Asian"
+        ]
+      },
+      {
+        "label": "offensive",
+        "annotator_id": 4,
+        "target": [
+          "Asian"
+        ]
+      },
+      {
+        "label": "hatespeech",
+        "annotator_id": 3,
+        "target": [
+          "Asian"
+        ]
+      }
+    ],
+    "rationales": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "post_tokens": [
+      "<user>",
+      "i",
+      "am",
+      "bit",
+      "confused",
+      "coz",
+      "chinese",
+      "ppl",
+      "can",
+      "not",
+      "access",
+      "twitter",
+      "thn",
+      "how",
+      "this",
+      "ching",
+      "chong",
+      "using",
+      "it",
+      "i",
+      "think",
+      "he",
+      "pakistani",
+      "\ud83e\udd14",
+      "\ud83e\udd14",
+      "\ud83e\udd14"
+    ]
+  },
+    "1178887585831280640_twitter": {
+    "post_id": "1178887585831280640_twitter",
+    "annotators": [
+      {
+        "label": "offensive",
+        "annotator_id": 4,
+        "target": [
+          "Homosexual"
+        ]
+      },
+      {
+        "label": "hatespeech",
+        "annotator_id": 89,
+        "target": [
+          "Homosexual"
+        ]
+      },
+      {
+        "label": "offensive",
+        "annotator_id": 30,
+        "target": [
+          "Homosexual"
+        ]
+      }
+    ],
+    "rationales": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ]
+    ],
+    "post_tokens": [
+      "woke",
+      "up",
+      "to",
+      "ncr",
+      "propaganda",
+      "spray",
+      "painted",
+      "onto",
+      "my",
+      "trailer",
+      "this",
+      "means",
+      "war",
+      "kimball",
+      "you",
+      "gay",
+      "faggot"
+    ]
+  },
+  "1178361474558943232_twitter": {
+    "post_id": "1178361474558943232_twitter",
+    "annotators": [
+      {
+        "label": "normal",
+        "annotator_id": 5,
+        "target": [
+          "None"
+        ]
+      },
+      {
+        "label": "hatespeech",
+        "annotator_id": 4,
+        "target": [
+          "African",
+          "Women"
+        ]
+      },
+      {
+        "label": "hatespeech",
+        "annotator_id": 17,
+        "target": [
+          "African"
+        ]
+      }
+    ],
+    "rationales": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "post_tokens": [
+      "<user>",
+      "<user>",
+      "you",
+      "can",
+      "also",
+      "decide",
+      "not",
+      "to",
+      "like",
+      "the",
+      "niggeress",
+      "too",
+      "\ud83e\udd37",
+      "\ud83c\udffd",
+      "\u200d",
+      "\u2640\ufe0f"
+    ]
+  }
+}
