@@ -304,10 +304,7 @@ def run_model_comparison(
             task_type='3class',
             model_name=model_name
         )
-
-    # Then run binary models
-    print("\n=== Running Binary Classification Models ===\n")
-    for model_name in models_to_compare:
+        
         print(f"\nTraining {model_name} for binary classification")
         results["binary"][model_name] = train_and_evaluate_model(
             model_name,
@@ -334,8 +331,6 @@ def run_model_comparison(
             task_type='binary',
             model_name=model_name
         )
-
-        # Error analysis
 
     efficiency_results = analyze_efficiency(
         models_to_compare,
