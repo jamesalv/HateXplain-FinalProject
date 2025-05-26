@@ -139,6 +139,14 @@ class TransformerClassifier:
         self.lam = lam  # Add this
         self.use_attention_supervision = use_attention_supervision  # Add this  
         self.temperature = temperature  # Add this
+        
+        # Add confirmation that we use attention supervision
+        if self.use_attention_supervision:
+            print(
+                f"Attention supervision is enabled with lambda: {self.lam} and temperature: {self.temperature}"
+            )
+        else:
+            print("Attention supervision is disabled.")
         self.model.to(self.device)
 
     def calculate_attention_loss(
@@ -298,7 +306,14 @@ class TransformerClassifier:
                 scheduler.step()
 
                 # Update progress bar
-                progress_bar.set_postfix({"loss": loss.item()})
+                progress_bar.set_postfix(
+                    {
+                        "classification_loss": classification_loss.item(),
+                        "attention_loss": attention_loss.item(),
+                        "total_loss": loss.item(),
+                        "lr": scheduler.get_last_lr()[0],
+                    }
+                )
 
             # Calculate average training loss
             avg_train_loss = total_train_loss / len(train_dataloader)

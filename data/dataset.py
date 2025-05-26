@@ -57,13 +57,13 @@ class HateXplainDataset(Dataset):
         label = torch.tensor(self.label_map[label_text], dtype=torch.long)
         
         # Debug print for first few samples (remove after testing)
-        if index < 3:
-            print(f"Sample {index}:")
-            print(f"  Input IDs shape: {input_ids.shape}")
-            print(f"  Attention mask shape: {attention_mask.shape}")
-            print(f"  Rationales shape: {rationales.shape}")
-            print(f"  Label: {label_text} -> {label.item()}")
-            print(f"  Rationales sample: {rationales[:10]}")  # First 10 values
+        # if index < 3:
+        #     print(f"Sample {index}:")
+        #     print(f"  Input IDs shape: {input_ids.shape}")
+        #     print(f"  Attention mask shape: {attention_mask.shape}")
+        #     print(f"  Rationales shape: {rationales.shape}")
+        #     print(f"  Label: {label_text} -> {label.item()}")
+        #     print(f"  Rationales sample: {rationales[:10]}")  # First 10 values
         
         return {
             "input_ids": input_ids,

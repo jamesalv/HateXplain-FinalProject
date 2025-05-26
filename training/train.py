@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 from typing import Dict, List, Tuple, Any, Union, Optional
+from analysis.efficiency import analyze_efficiency
+from analysis.errors import analyze_errors
+from data.preprocessing.pipeline import preprocess_datasets
 from models.classifier import TransformerClassifier
 from data.dataset import prepare_data_loaders
 from analysis.bias import calculate_gmb_metrics
@@ -232,8 +235,6 @@ def train_and_evaluate_model(
 
 def run_model_comparison(
     models_to_compare: List[str],
-    data_3class: pd.DataFrame,
-    data_2class: pd.DataFrame,
     batch_size: int = 16,
     epochs: int = 3,
     auto_weighted: bool = False,
@@ -273,6 +274,11 @@ def run_model_comparison(
     print("\n=== Running 3-Class Classification Models ===\n")
     for model_name in models_to_compare:
         print(f"\nTraining {model_name} for 3-class classification")
+        # Process the data for this model
+        data_3class, data_2class = preprocess_datasets(
+            data_path='Raw Data/dataset.json',
+            model_name=model_name,
+        )
         results["3class"][model_name] = train_and_evaluate_model(
             model_name,
             data_3class,
@@ -291,6 +297,12 @@ def run_model_comparison(
             lam=lam,
             use_attention_supervision=use_attention_supervision,
             temperature=temperature,
+        )
+        analyze_errors(
+            results, 
+            data_3class, 
+            task_type='3class',
+            model_name=model_name
         )
 
     # Then run binary models
@@ -316,5 +328,20 @@ def run_model_comparison(
             use_attention_supervision=use_attention_supervision,
             temperature=temperature,
         )
+        analyze_errors(
+            results, 
+            data_2class, 
+            task_type='binary',
+            model_name=model_name
+        )
 
+        # Error analysis
+
+    efficiency_results = analyze_efficiency(
+        models_to_compare,
+        data_3class,
+        num_classes=3,
+        batch_size=32
+    )
+    results["efficiency"] = efficiency_results
     return results

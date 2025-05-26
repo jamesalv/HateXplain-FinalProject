@@ -5,12 +5,12 @@ from sklearn.model_selection import train_test_split
 from typing import Dict, Any, Union, Optional
 
 from models.classifier import TransformerClassifier
-from data.dataset import HateSpeechDataset
+from data.dataset import HateXplainDataset
 
 def analyze_errors(
     results: Dict[str, Dict[str, Any]], 
     data_df: pd.DataFrame, 
-    task_type: str = '3class', 
+    task_type: str = '3-class', 
     model_name: Optional[str] = None,
     model_dir: str = "saved_models"
 ) -> pd.DataFrame:
@@ -52,10 +52,9 @@ def analyze_errors(
     _, test_df = train_test_split(data_df, test_size=0.1, stratify=data_df['final_label'], random_state=42)
     
     # Create test dataset
-    test_dataset = HateSpeechDataset(
-        texts=test_df['text'].tolist(),
-        labels=test_df['final_label'].tolist(),
-        tokenizer=classifier.tokenizer
+    test_dataset = HateXplainDataset(
+        test_df,
+        task_type=task_type,
     )
     
     # Create test dataloader

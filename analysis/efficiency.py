@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from typing import List, Dict, Any
 
 from models.classifier import TransformerClassifier
-from data.dataset import HateSpeechDataset
+from data.dataset import HateXplainDataset
 
 def analyze_efficiency(
     models_to_compare: List[str], 
@@ -46,7 +46,7 @@ def analyze_efficiency(
         classifier = TransformerClassifier(model_name, num_classes)
         
         # Prepare test data
-        test_dataset = HateSpeechDataset(
+        test_dataset = HateXplainDataset(
             texts=test_df['text'].tolist(),
             labels=test_df['final_label'].tolist(),
             tokenizer=classifier.tokenizer
