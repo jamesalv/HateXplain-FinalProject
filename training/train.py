@@ -17,6 +17,7 @@ from data.dataset import prepare_data_loaders
 from analysis.bias import calculate_gmb_metrics
 from transformers import AutoTokenizer
 
+
 def train_and_evaluate_model(
     model_name: str,
     data_df: pd.DataFrame,
@@ -36,6 +37,10 @@ def train_and_evaluate_model(
     patience: int = 2,
     min_delta: float = 0.001,
     monitor: str = "val_loss",
+    # RATIONALE PARAMS
+    lam: float = 1.0,  # Fixed: should be float, not int
+    use_attention_supervision: bool = True,  # Fixed: missing parameter
+    temperature: float = 1.0,  # Fixed: missing parameter
 ) -> Dict[str, Any]:
     """
     Train and evaluate a model with the given parameters
@@ -60,8 +65,7 @@ def train_and_evaluate_model(
     Returns:
         Dictionary with results
     """
-    
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+
     # Prepare data loaders
     (
         train_dataloader,
@@ -72,9 +76,7 @@ def train_and_evaluate_model(
         label_to_weight,
     ) = prepare_data_loaders(
         data_df,
-        tokenizer,
         batch_size=batch_size,
-        max_length=max_length,
         auto_weighted=auto_weighted,
     )
 
@@ -86,7 +88,7 @@ def train_and_evaluate_model(
     }
     print(f"Class weights: {class_weights}")
     ordered_weights = np.array([class_weights[i] for i in range(len(class_weights))])
-    
+
     # Initialize model
     classifier = TransformerClassifier(
         model_name,
@@ -96,8 +98,11 @@ def train_and_evaluate_model(
         classifier_dropout=classifier_dropout,
         custom_classifier_head=custom_classifier_head,
         class_weights=ordered_weights,
+        lam=lam,
+        use_attention_supervision=use_attention_supervision,
+        temperature=temperature,
     )
-    
+
     # Train model
     history = classifier.train(
         train_dataloader,
@@ -165,36 +170,35 @@ def train_and_evaluate_model(
     )
     classifier.save_model(model_save_path)
 
-    if 'target_groups' in test_df.columns:
+    if "target_groups" in test_df.columns:
         # Get list of target groups
         all_targets = []
-        for targets in test_df['target_groups']:
+        for targets in test_df["target_groups"]:
             if targets is not None:
                 all_targets.extend(targets)
-        all_targets = [target for target in all_targets if target not in ['None', 'Other']]
+        all_targets = [
+            target for target in all_targets if target not in ["None", "Other"]
+        ]
         from collections import Counter
+
         top_targets = Counter(all_targets).most_common(10)
         target_groups = [target for target, _ in top_targets]
-        
+
         # Calculate GMB metrics and bias_metrics (AUROC per target group)
         gmb_metrics, bias_metrics = calculate_gmb_metrics(
-            predictions, 
-            probabilities, 
-            true_labels, 
-            test_df, 
-            target_groups
+            predictions, probabilities, true_labels, test_df, target_groups
         )
-        
+
         # Print GMB metrics
         print("\nBias AUC Metrics:")
         for metric, value in gmb_metrics.items():
             print(f"{metric}: {value:.4f}")
-        
+
         # Print target-specific metrics using BNSP (like the original paper)
-        if bias_metrics.get('bnsp'):
+        if bias_metrics.get("bnsp"):
             print("\nBNSP AUROC by Target Group:")
             target_metrics = {}
-            for target, auc_score in bias_metrics['bnsp'].items():
+            for target, auc_score in bias_metrics["bnsp"].items():
                 print(f"{target}: AUROC = {auc_score:.4f}")
                 target_metrics[target] = auc_score
         else:
@@ -203,7 +207,7 @@ def train_and_evaluate_model(
         gmb_metrics = None
         bias_metrics = None
         target_metrics = None
-        
+
     # Return comprehensive results
     results = {
         "model_name": model_name,
@@ -223,7 +227,7 @@ def train_and_evaluate_model(
         "bias_auc_metrics": gmb_metrics,
     }
 
-    return results
+    return results  # Replace with actual results dictionary when model is implemented
 
 
 def run_model_comparison(
@@ -241,6 +245,9 @@ def run_model_comparison(
     patience: int = 2,
     min_delta: float = 0.001,
     monitor: str = "val_loss",
+    lam: float = 1.0,  # Fixed: should be float, not int
+    use_attention_supervision: bool = True,  # Fixed: missing parameter
+    temperature: float = 1.0,  # Fixed: missing parameter
 ) -> Dict[str, Dict[str, Any]]:
     """
     Run comparison of multiple models on both binary and 3-class tasks
@@ -281,6 +288,9 @@ def run_model_comparison(
             patience=patience,
             min_delta=min_delta,
             monitor=monitor,
+            lam=lam,
+            use_attention_supervision=use_attention_supervision,
+            temperature=temperature,
         )
 
     # Then run binary models
@@ -302,6 +312,9 @@ def run_model_comparison(
             patience=patience,
             min_delta=min_delta,
             monitor=monitor,
+            lam=lam,
+            use_attention_supervision=use_attention_supervision,
+            temperature=temperature,
         )
 
     return results

@@ -45,6 +45,10 @@ class TransformerClassifier:
         classifier_dropout: float = 0.1,
         custom_classifier_head: bool = False,
         class_weights: Optional[np.ndarray] = None,
+        # RATIONALE PARAMS
+        lam: float = 1.0,  # Fixed: should be float, not int
+        use_attention_supervision: bool = True,  # Fixed: missing parameter
+        temperature: float = 1.0,  # Fixed: missing parameter
         device=None,
     ):
         """
@@ -130,7 +134,46 @@ class TransformerClassifier:
         else:
             self.loss_fn = torch.nn.CrossEntropyLoss()
 
+        self.att_loss_fn = nn.CrossEntropyLoss()
+        # Rationale parameters
+        self.lam = lam  # Add this
+        self.use_attention_supervision = use_attention_supervision  # Add this  
+        self.temperature = temperature  # Add this
         self.model.to(self.device)
+
+    def calculate_attention_loss(
+        self, human_rationales, model_attention, lambd: float = 1.0
+    ):
+        """Calculate attention loss using cross-entropy between human rationales and model attention."""
+        if human_rationales is None:
+            return torch.tensor(0.0, device=self.device, requires_grad=True)
+
+        # Ensure tensors are on the same device
+        human_rationales = human_rationales.to(self.device)
+        model_attention = model_attention.to(self.device)
+
+        # Apply temperature scaling to model attention
+        model_attention_scaled = model_attention / self.temperature
+
+        # Use CrossEntropyLoss with soft targets (probability distributions)
+        # human_rationales are already softmaxed probabilities, use them directly
+        attention_loss = self.att_loss_fn(model_attention_scaled, human_rationales)
+
+        return lambd * attention_loss
+
+    def extract_attention_weights(self, attentions):
+        """Extract attention weights from transformer attention outputs from cls layer"""
+        if attentions is None or len(attentions) == 0:
+            return None
+
+        # Use CLS token attention from the last layer
+        last_layer_attention = attentions[
+            -1
+        ]  # [batch_size, num_heads, seq_len, seq_len]
+        cls_attention = last_layer_attention.mean(dim=1)[
+            :, 0, :
+        ]  # [batch_size, seq_len]
+        return cls_attention
 
     def train(
         self,
@@ -208,10 +251,38 @@ class TransformerClassifier:
                 labels = batch["labels"].to(self.device)
 
                 # Forward pass
-                outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
+                outputs = self.model(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    output_attentions=True,  # Enable attention outputs
+                )
 
                 logits = outputs.logits
-                loss = self.loss_fn(logits, labels)
+                # UPDATE: Added support for attention supervision
+                classification_loss = self.loss_fn(logits, labels)
+                # Extract attention weights if available
+                attentions = (
+                    outputs.attentions if hasattr(outputs, "attentions") else None
+                )
+                model_attention = self.extract_attention_weights(attentions)
+                # Calculate attention loss if human rationales are provided
+                human_rationales = batch.get("rationales", None)
+                attention_loss = torch.tensor(0.0, device=self.device)
+                if self.use_attention_supervision and human_rationales is not None:
+                    model_attention = self.extract_attention_weights(attentions)
+                    if model_attention is not None:
+                        attention_loss = self.calculate_attention_loss(
+                            human_rationales, model_attention, self.lam
+                        )
+                else:
+                    print(
+                        "Attention supervision is disabled or human rationales are not provided."
+                    )
+                # Total loss is a combination of classification and attention loss
+                loss = classification_loss + attention_loss
+                # Move loss to device
+                loss = loss.to(self.device)
+                # Accumulate training loss
                 total_train_loss += loss.item()
 
                 # Backward pass
@@ -321,10 +392,29 @@ class TransformerClassifier:
 
                 # Forward pass
                 outputs = self.model(
-                    input_ids=input_ids, attention_mask=attention_mask, labels=labels
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    labels=labels,
+                    output_attentions=True,
                 )
 
-                loss = outputs.loss
+                classification_loss = outputs.loss
+                # Extract attention weights if available
+                attentions = (
+                    outputs.attentions if hasattr(outputs, "attentions") else None
+                )
+                model_attention = self.extract_attention_weights(attentions)
+                # Calculate attention loss if human rationales are provided
+                human_rationales = batch.get("rationales", None)
+                attention_loss = torch.tensor(0.0, device=self.device)
+                if self.use_attention_supervision and human_rationales is not None:
+                    model_attention = self.extract_attention_weights(attentions)
+                    if model_attention is not None:
+                        attention_loss = self.calculate_attention_loss(
+                            human_rationales, model_attention, self.lam
+                        )
+                # Total loss is a combination of classification and attention loss
+                loss = classification_loss + attention_loss
                 total_loss += loss.item()
 
                 # Get predictions
