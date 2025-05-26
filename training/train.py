@@ -298,12 +298,12 @@ def run_model_comparison(
             use_attention_supervision=use_attention_supervision,
             temperature=temperature,
         )
-        analyze_errors(
-            results, 
-            data_3class, 
-            task_type='3class',
-            model_name=model_name
-        )
+        # analyze_errors(
+        #     results, 
+        #     data_3class, 
+        #     task_type='3class',
+        #     model_name=model_name
+        # )
         
         print(f"\nTraining {model_name} for binary classification")
         results["binary"][model_name] = train_and_evaluate_model(
@@ -325,18 +325,18 @@ def run_model_comparison(
             use_attention_supervision=use_attention_supervision,
             temperature=temperature,
         )
-        analyze_errors(
-            results, 
-            data_2class, 
-            task_type='binary',
-            model_name=model_name
-        )
+        # analyze_errors(
+        #     results, 
+        #     data_2class, 
+        #     task_type='binary',
+        #     model_name=model_name
+        # )
 
-    efficiency_results = analyze_efficiency(
-        models_to_compare,
-        data_3class,
-        num_classes=3,
-        batch_size=32
-    )
-    results["efficiency"] = efficiency_results
+    # efficiency_results = analyze_efficiency(
+    #     models_to_compare,
+    #     data_3class,
+    #     num_classes=3,
+    #     batch_size=32
+    # )
+    # results["efficiency"] = efficiency_results
     return results
