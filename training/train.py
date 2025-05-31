@@ -127,7 +127,7 @@ def train_and_evaluate_model(
     print(f"Macro F1 Score: {test_f1:.4f}")
 
     # Get detailed metrics
-    predictions, true_labels, probabilities = classifier.predict(test_dataloader)
+    predictions, true_labels, probabilities, attention_weights = classifier.predict(test_dataloader)
 
     # Convert numeric labels back to text
     text_preds = [inv_label_map[pred] for pred in predictions]

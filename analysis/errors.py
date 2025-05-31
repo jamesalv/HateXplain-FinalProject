@@ -65,7 +65,7 @@ def analyze_errors(
     )
     
     # Get predictions
-    predictions, true_labels, probabilities = classifier.predict(test_dataloader)
+    predictions, true_labels, probabilities, attention_weights = classifier.predict(test_dataloader)
     
     # Create label map
     label_map = test_dataset.label_map
