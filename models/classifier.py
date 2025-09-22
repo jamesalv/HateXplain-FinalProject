@@ -181,6 +181,7 @@ class TransformerClassifier:
         cls_attention = last_layer_attention.mean(dim=1)[
             :, 0, :
         ]  # [batch_size, seq_len]
+        # print("Extracted attention weights from CLS token layer with shape:", cls_attention.shape)
         return cls_attention
 
     def train(
@@ -453,7 +454,7 @@ class TransformerClassifier:
         self, dataloader: torch.utils.data.DataLoader
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
-        Make predictions with the model
+        Make predictions with the model and return predictions, true labels, and probabilities, attention weights.
 
         Args:
             dataloader: DataLoader with test data
@@ -466,6 +467,7 @@ class TransformerClassifier:
         all_preds = []
         all_labels = []
         all_probs = []
+        all_attention_weights = []
 
         # No gradient computation for prediction
         with torch.no_grad():
@@ -476,12 +478,25 @@ class TransformerClassifier:
                 labels = batch["labels"].to(self.device)
 
                 # Forward pass
-                outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
+                outputs = self.model(
+                    input_ids=input_ids, 
+                    attention_mask=attention_mask,
+                    output_attentions=True,  # Enable attention outputs
+                    )
 
                 # Get predictions
                 logits = outputs.logits
                 probs = torch.softmax(logits, dim=1)
                 preds = torch.argmax(logits, dim=1).cpu().numpy()
+                
+                attention_weights = self.extract_attention_weights(outputs.attentions)
+                if attention_weights is not None:
+                    all_attention_weights.extend(attention_weights.cpu().numpy())
+                else:
+                    print("No attention weights found in the outputs.")
+                    batch_size, seq_len = input_ids.shape
+                    dummy_attention = torch.zeros(batch_size, seq_len)
+                    all_attention_weights.extend(dummy_attention.cpu().numpy())
 
                 # Store predictions, probabilities, and labels
                 all_preds.extend(preds)
@@ -489,7 +504,12 @@ class TransformerClassifier:
                 all_labels.extend(labels.cpu().numpy())
 
         # Convert to numpy arrays
-        return np.array(all_preds), np.array(all_labels), np.array(all_probs)
+        # Print all shapes for debugging
+        print(f"Predictions shape: {np.array(all_preds).shape}")
+        print(f"Labels shape: {np.array(all_labels).shape}")
+        print(f"Probabilities shape: {np.array(all_probs).shape}")
+        print(f"Attention weights shape: {np.array(all_attention_weights).shape}")
+        return np.array(all_preds), np.array(all_labels), np.array(all_probs), np.array(all_attention_weights)
 
     def save_model(self, path: str) -> None:
         """

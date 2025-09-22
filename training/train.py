@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
 from sklearn.metrics import (
-    accuracy_score,
-    f1_score,
     precision_score,
     recall_score,
     roc_auc_score,
@@ -11,14 +9,17 @@ from sklearn.metrics import (
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
-from typing import Dict, List, Tuple, Any, Union, Optional
+from typing import Dict, List, Any
 from analysis.efficiency import analyze_efficiency
-from analysis.errors import analyze_errors
 from data.preprocessing.pipeline import preprocess_datasets
 from models.classifier import TransformerClassifier
 from data.dataset import prepare_data_loaders
 from analysis.bias import calculate_gmb_metrics
-from transformers import AutoTokenizer
+
+from models.eraserConvert import (
+    convert_predictions_to_eraser_format_with_faithfulness,
+    save_eraser_predictions,
+)
 
 
 def train_and_evaluate_model(
@@ -27,7 +28,6 @@ def train_and_evaluate_model(
     num_classes: int,
     batch_size: int = 16,
     epochs: int = 4,
-    max_length: int = 128,
     learning_rate: float = 2e-5,
     warmup_steps: int = 0,
     model_dir: str = "saved_models",
@@ -44,6 +44,10 @@ def train_and_evaluate_model(
     lam: float = 1.0,  # Fixed: should be float, not int
     use_attention_supervision: bool = True,  # Fixed: missing parameter
     temperature: float = 1.0,  # Fixed: missing parameter
+    # ERASER PARAMS
+    create_eraser_predictions: bool = True,  # Enable ERASER prediction generation
+    eraser_k: int = 5,  # Number of top-k rationales for explainability evaluation
+    eraser_output_dir: str = "eraser_predictions",  # NEW: Directory for ERASER outputs
 ) -> Dict[str, Any]:
     """
     Train and evaluate a model with the given parameters
@@ -81,6 +85,7 @@ def train_and_evaluate_model(
         data_df,
         batch_size=batch_size,
         auto_weighted=auto_weighted,
+        split_path="E:/Campus/Transformers-V2/Raw Data/post_id_divisions.json",
     )
 
     # Invert label map for later use
@@ -127,7 +132,9 @@ def train_and_evaluate_model(
     print(f"Macro F1 Score: {test_f1:.4f}")
 
     # Get detailed metrics
-    predictions, true_labels, probabilities, attention_weights = classifier.predict(test_dataloader)
+    predictions, true_labels, probabilities, attention_weights = classifier.predict(
+        test_dataloader
+    )
 
     # Convert numeric labels back to text
     text_preds = [inv_label_map[pred] for pred in predictions]
@@ -173,6 +180,51 @@ def train_and_evaluate_model(
     )
     classifier.save_model(model_save_path)
 
+    eraser_file_path = None
+    if create_eraser_predictions and num_classes == 3:
+        print(f"\n{'='*50}")
+        print("GENERATING ERASER PREDICTIONS")
+        print(f"{'='*50}")
+
+        try:
+            # Convert predictions to ERASER format with faithfulness scores
+            eraser_predictions = convert_predictions_to_eraser_format_with_faithfulness(
+                predictions=predictions,
+                probabilities=probabilities,
+                attention_weights=attention_weights,
+                true_labels=true_labels,
+                test_df=test_df,
+                label_map=label_map,
+                model=classifier.model,
+                tokenizer=classifier.tokenizer,
+                device=classifier.device,
+                k=eraser_k,
+            )
+
+            # Create output path
+            safe_model_name = model_name.replace("/", "_")
+            eraser_file_path = os.path.join(
+                eraser_output_dir, f"{safe_model_name}_3class_predictions.jsonl"
+            )
+
+            # Save ERASER predictions
+            save_eraser_predictions(eraser_predictions, eraser_file_path)
+
+            print(f"✅ ERASER predictions saved to: {eraser_file_path}")
+            print(f"📊 Total ERASER entries: {len(eraser_predictions)}")
+            print(f"🎯 Using top-{eraser_k} rationales per prediction")
+
+        except Exception as e:
+            print(f"❌ Error generating ERASER predictions: {str(e)}")
+            print("Continuing with standard evaluation...")
+            eraser_file_path = None
+
+    elif create_eraser_predictions and num_classes == 2:
+        print(
+            "⚠️  ERASER predictions skipped for binary classification (following HateXplain paper)"
+        )
+
+    # BIAS CALCULATION
     if "target_groups" in test_df.columns:
         # Get list of target groups
         all_targets = []
@@ -276,7 +328,7 @@ def run_model_comparison(
         print(f"\nTraining {model_name} for 3-class classification")
         # Process the data for this model
         data_3class, data_2class = preprocess_datasets(
-            data_path='Raw Data/dataset.json',
+            data_path="Raw Data/dataset.json",
             model_name=model_name,
         )
         results["3class"][model_name] = train_and_evaluate_model(
@@ -297,14 +349,17 @@ def run_model_comparison(
             lam=lam,
             use_attention_supervision=use_attention_supervision,
             temperature=temperature,
+            create_eraser_predictions=True,  # Enable ERASER predictions for 3-class
+            eraser_k=5,  # Use top-5 rationales for ERASER
+            eraser_output_dir="eraser_predictions_3class",  # Directory for 3-class ERASER outputs
         )
         # analyze_errors(
-        #     results, 
-        #     data_3class, 
+        #     results,
+        #     data_3class,
         #     task_type='3class',
         #     model_name=model_name
         # )
-        
+
         print(f"\nTraining {model_name} for binary classification")
         results["binary"][model_name] = train_and_evaluate_model(
             model_name,
@@ -326,17 +381,14 @@ def run_model_comparison(
             temperature=temperature,
         )
         # analyze_errors(
-        #     results, 
-        #     data_2class, 
+        #     results,
+        #     data_2class,
         #     task_type='binary',
         #     model_name=model_name
         # )
 
     # efficiency_results = analyze_efficiency(
-    #     models_to_compare,
-    #     data_3class,
-    #     num_classes=3,
-    #     batch_size=32
+    #     models_to_compare, data_3class, num_classes=3, batch_size=32
     # )
     # results["efficiency"] = efficiency_results
     return results

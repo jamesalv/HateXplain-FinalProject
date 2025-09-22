@@ -56,15 +56,6 @@ class HateXplainDataset(Dataset):
         label_text = row['final_label']
         label = torch.tensor(self.label_map[label_text], dtype=torch.long)
         
-        # Debug print for first few samples (remove after testing)
-        # if index < 3:
-        #     print(f"Sample {index}:")
-        #     print(f"  Input IDs shape: {input_ids.shape}")
-        #     print(f"  Attention mask shape: {attention_mask.shape}")
-        #     print(f"  Rationales shape: {rationales.shape}")
-        #     print(f"  Label: {label_text} -> {label.item()}")
-        #     print(f"  Rationales sample: {rationales[:10]}")  # First 10 values
-        
         return {
             "input_ids": input_ids,
             "attention_mask": attention_mask,
@@ -75,11 +66,7 @@ class HateXplainDataset(Dataset):
 def prepare_data_loaders(
     df: pd.DataFrame, 
     batch_size: int = 16, 
-    test_size: float = 0.1, 
-    val_size: float = 0.1, 
-    random_state: int = 42,
-    custom_split: bool = False,
-    custom_split_path: str = None,
+    split_path: str = None,
     auto_weighted: bool = False
 ) -> Tuple[DataLoader, DataLoader, DataLoader, Dict[str, int], pd.DataFrame, Dict[str, float]]:
     """
@@ -91,34 +78,20 @@ def prepare_data_loaders(
         test_size: Proportion of data to use for testing
         val_size: Proportion of training data to use for validation
         random_state: Random seed for reproducibility
-        custom_split: Whether to use a custom split
-        custom_split_path: Path to custom split file (if custom_split is True)
+        split_path: Path to custom split file (if custom_split is True)
         auto_weighted: Whether to use auto-weighted sampling
         
     Returns:
         train_dataloader, val_dataloader, test_dataloader, label_map, test_df, label_to_weight
     """
-    if custom_split and custom_split_path is not None:
-        # Load custom split
-        with open(custom_split_path, 'r') as f:
-            custom_split_data = json.load(f)
-        
-        train_df = df[df['post_id'].isin(custom_split_data['train'])]
-        val_df = df[df['post_id'].isin(custom_split_data['val'])]
-        test_df = df[df['post_id'].isin(custom_split_data['test'])]
-    else: 
-        train_df, test_df = train_test_split(
-            df, 
-            test_size=test_size, 
-            stratify=df['final_label'], 
-            random_state=random_state
-        )
-        train_df, val_df = train_test_split(
-            train_df, 
-            test_size=val_size, 
-            stratify=train_df['final_label'], 
-            random_state=random_state
-        )
+    print(f"Using custom split from {split_path}")
+    # Load custom split
+    with open(split_path, 'r') as f:
+        custom_split_data = json.load(f)
+    
+    train_df = df[df['post_id'].isin(custom_split_data['train'])]
+    val_df = df[df['post_id'].isin(custom_split_data['val'])]
+    test_df = df[df['post_id'].isin(custom_split_data['test'])]
     
     print(f"Train set: {len(train_df)}, Validation set: {len(val_df)}, Test set: {len(test_df)}")
     
