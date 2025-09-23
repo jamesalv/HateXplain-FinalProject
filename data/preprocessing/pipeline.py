@@ -6,7 +6,7 @@ from tqdm import tqdm
 import os
 import pickle
 import torch
-from transformers import AutoTokenizer
+from transformers.models.auto.tokenization_auto import AutoTokenizer
 from data.preprocessing.eraserConvert import save_eraser_ground_truth
 from data.preprocessing.rationalePreprocessing import (
     align_rationales,
