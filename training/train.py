@@ -85,7 +85,7 @@ def train_and_evaluate_model(
         data_df,
         batch_size=batch_size,
         auto_weighted=auto_weighted,
-        split_path="../Raw Data/post_id_divisions.json",
+        split_path="Raw Data/post_id_divisions.json",
     )
 
     # Invert label map for later use
