@@ -7,3 +7,5 @@ numpy
 matplotlib
 torch
 scikit_learn
+more_itertools
+seaborn
