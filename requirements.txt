@@ -1,7 +1,6 @@
 scipy
 spacy
 tqdm
-Keras
 waiting
 ekphrasis
 pandas
@@ -11,5 +10,5 @@ numpy
 matplotlib
 gensim
 dataclasses
-GPUtil
+torch
 scikit_learn

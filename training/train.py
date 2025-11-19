@@ -325,40 +325,10 @@ def run_model_comparison(
     # First run 3-class models
     print("\n=== Running 3-Class Classification Models ===\n")
     for model_name in models_to_compare:
-        print(f"\nTraining {model_name} for 3-class classification")
-        # Process the data for this model
-        data_3class, data_2class = preprocess_datasets(
+        _, data_2class = preprocess_datasets(
             data_path="Raw Data/dataset.json",
             model_name=model_name,
         )
-        results["3class"][model_name] = train_and_evaluate_model(
-            model_name,
-            data_3class,
-            num_classes=3,
-            batch_size=batch_size,
-            epochs=epochs,
-            auto_weighted=auto_weighted,
-            hidden_dropout_prob=hidden_dropout_prob,
-            attention_probs_dropout_prob=attention_probs_dropout_prob,
-            classifier_dropout=classifier_dropout,
-            custom_classifier_head=custom_classifier_head,
-            weight_decay=weight_decay,
-            patience=patience,
-            min_delta=min_delta,
-            monitor=monitor,
-            lam=lam,
-            use_attention_supervision=use_attention_supervision,
-            temperature=temperature,
-            create_eraser_predictions=True,  # Enable ERASER predictions for 3-class
-            eraser_k=5,  # Use top-5 rationales for ERASER
-            eraser_output_dir="eraser_predictions_3class",  # Directory for 3-class ERASER outputs
-        )
-        # analyze_errors(
-        #     results,
-        #     data_3class,
-        #     task_type='3class',
-        #     model_name=model_name
-        # )
 
         print(f"\nTraining {model_name} for binary classification")
         results["binary"][model_name] = train_and_evaluate_model(
@@ -380,15 +350,4 @@ def run_model_comparison(
             use_attention_supervision=use_attention_supervision,
             temperature=temperature,
         )
-        # analyze_errors(
-        #     results,
-        #     data_2class,
-        #     task_type='binary',
-        #     model_name=model_name
-        # )
-
-    # efficiency_results = analyze_efficiency(
-    #     models_to_compare, data_3class, num_classes=3, batch_size=32
-    # )
-    # results["efficiency"] = efficiency_results
     return results
