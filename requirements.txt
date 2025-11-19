@@ -1,14 +1,9 @@
-scipy
 spacy
 tqdm
-waiting
 ekphrasis
 pandas
 transformers
-lime
 numpy
 matplotlib
-gensim
-dataclasses
 torch
 scikit_learn

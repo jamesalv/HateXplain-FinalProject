@@ -1,19 +1,7 @@
 import numpy as np
 from typing import List, Tuple
-
 import torch
-
 from data.preprocessing.textPreprocessing import preprocess_text
-
-# Rationale processing
-def softmax(x):
-    e_x = np.exp(x - np.max(x))
-    return e_x / e_x.sum()
-
-def calculate_rationale(rationale_list: List[int]) -> List[float]:
-    att_arr = np.array(rationale_list)
-    att_mean = att_arr.mean(axis=0)
-    return softmax(att_mean)
 
 def create_text_segment(text_tokens: List[str], rationale_mask: List[int]) -> Tuple[List[str], List[int]]:
     """
