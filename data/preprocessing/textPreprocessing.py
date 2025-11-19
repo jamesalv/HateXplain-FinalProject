@@ -1,5 +1,5 @@
 import re
-import spacy
+# import spacy
 
 # Import ekphrasis components
 from ekphrasis.classes.preprocessor import TextPreProcessor
@@ -8,7 +8,7 @@ from ekphrasis.dicts.emoticons import emoticons
 
 # Text Preprocessing
 # Initialize spaCy
-nlp = spacy.load("en_core_web_sm")
+# nlp = spacy.load("en_core_web_sm")
 
 # Initialize ekphrasis text processor
 text_processor = TextPreProcessor(
@@ -73,8 +73,8 @@ def preprocess_text(text):
     processed_text = re.sub(r"[<\*>]", "", processed_text)
     
     # Use spaCy for additional normalization (without tokenization)
-    doc = nlp(processed_text)
+    # doc = nlp(processed_text)
     # Create a normalized string, preserving meaningful whitespace
-    normalized_text = " ".join([token.text for token in doc])
+    # normalized_text = " ".join([token.text for token in doc])
     
-    return normalized_text
+    return processed_text

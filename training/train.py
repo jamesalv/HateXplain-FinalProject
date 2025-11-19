@@ -85,7 +85,7 @@ def train_and_evaluate_model(
         data_df,
         batch_size=batch_size,
         auto_weighted=auto_weighted,
-        split_path="E:/Campus/Transformers-V2/Raw Data/post_id_divisions.json",
+        split_path="C:\\Users\\james.alvin.dhanardi\\Work\\Other Codes\\Transformers-V2\\HateXplain-FinalProject\\Raw Data\\post_id_divisions.json",
     )
 
     # Invert label map for later use
